@@ -5,7 +5,7 @@ import { Nation } from '../nations/nation.entity';
 type FieldErrors<P extends string> ={[K in P]:string[]}
 @Entity()
 export class User {
-  constructor(user:User) {
+  constructor(user:Partial<User>) {
     Object.assign(this,user)
   }
   @PrimaryGeneratedColumn('increment')
