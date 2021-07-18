@@ -26,7 +26,8 @@
     "migration:create": "typeorm migration:create",
     "migration:run": "typeorm migration:run",
     "migration:revert": "typeorm migration:revert",
-    "seed": "node dist/seed.js"
+    "seed": "node dist/seed.js",
+    "model:create": "nest g"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
