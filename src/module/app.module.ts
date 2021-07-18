@@ -13,5 +13,6 @@ import { NationsModule } from './nations.module';
   providers: [AppService],
 })
 export class AppModule {
+  // 注入connection后在整个项目中都可是使用不需要再导入，使用方法在类的构造函数中传递即可
   constructor(private readonly connection: Connection) {}
 }
