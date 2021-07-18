@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOn
 import { Role } from './role.entity';
 import { Nation } from './nation.entity';
 
+type FieldErrors<P extends string> ={[K in P]:string[]}
 @Entity()
 export class User {
   constructor(user:User) {
@@ -14,7 +15,7 @@ export class User {
   username: string;
 
   @Column('varchar')
-  password: string;
+  passwordDigest: string;
   
   @Column({type: 'varchar',nullable: true })
   email?: string;
@@ -26,6 +27,21 @@ export class User {
   @JoinTable()
   roles:Role[];
   
-  passwordDigest?: string;
+  password?: string;
   confirmPassword?: string;
+  
+  errors: FieldErrors<"username"|"confirmPassword"|"password"|"email"|"nation">
+  
+  validate() {
+    if(this.confirmPassword!==this.password){
+      this.errors.password.push('两次密码不相同')
+    }
+    if(this.password.length<6&&this.password.length>18){
+      this.errors.password.push('密码长度在6-18位之间')
+    }
+    return this
+  }
+  
+  
+  
 }
