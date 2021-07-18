@@ -1,15 +1,22 @@
-import { Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { AuthService } from './auth/auth.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller()
 export class AppController {
   constructor(private readonly authService: AuthService) {}
   
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard) // 不受保护的本地守卫，LocalStrategy.validate -> AuthService.validateUser -> AppController.login -> authService.login
   @Post('auth/login')
   async login(@Request() req) {
+    // Passport 将基于 validate() 方法的返回值构建一个user 对象，并将其作为属性附加到请求对象上。
     return this.authService.login(req.user);
   }
-
+  
+  @UseGuards(AuthGuard('jwt')) // 测试代码，受jwt保护的jwt守卫
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
+  }
 }
