@@ -1,8 +1,8 @@
-import {User} from '../entity/user.entity'
+import {User} from './user.entity'
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersService } from '../service/users.service';
-import { UsersController } from '../controller/users.controller';
+import { UsersService } from './users.service';
+import { UsersController } from './users.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])], // 导入实体

@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOne } from 'typeorm';
-import { Role } from './role.entity';
-import { Nation } from './nation.entity';
+import { Role } from '../roles/role.entity';
+import { Nation } from '../nations/nation.entity';
 
 type FieldErrors<P extends string> ={[K in P]:string[]}
 @Entity()

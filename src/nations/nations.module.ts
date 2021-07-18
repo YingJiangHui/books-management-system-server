@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { NationsService } from '../service/nations.service';
-import { NationsController } from '../controller/nations.controller';
-import { Nation } from '../entity/nation.entity';
+import { NationsService } from './nations.service';
+import { NationsController } from './nations.controller';
+import { Nation } from './nation.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Nation])], // 导入实体

@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
-import { NationsService } from '../service/nations.service';
-import { Nation } from '../entity/nation.entity';
+import { NationsService } from './nations.service';
+import { Nation } from './nation.entity';
 
 @Controller('nations')
 export class NationsController{

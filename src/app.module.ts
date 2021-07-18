@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AppController } from '../controller/app.controller';
-import { BookController } from '../controller/book.controller';
-import { AppService } from '../service/app.service';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
-import { UsersModule } from './users.module';
-import { NationsModule } from './nations.module';
+import { UsersModule } from './users/users.module';
+import { NationsModule } from './nations/nations.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot(),UsersModule,NationsModule],
-  controllers: [AppController, BookController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {
