@@ -25,7 +25,8 @@
     "entity:create": "typeorm entity:create",
     "migration:create": "typeorm migration:create",
     "migration:run": "typeorm migration:run",
-    "migration:revert": "typeorm migration:revert"
+    "migration:revert": "typeorm migration:revert",
+    "seed": "node dist/seed.js"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
