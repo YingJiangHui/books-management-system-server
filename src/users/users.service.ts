@@ -12,7 +12,9 @@ export class UsersService {
   find(): Promise<User[]> {
     return this.usersRepository.find();
   }
-  
+  findOne(username:string):Promise<User|undefined>{
+    return this.usersRepository.findOne({username});
+  }
   async createOne(user: User): Promise<User> {
     await this.usersRepository.create(user)
     return this.usersRepository.save(user);
