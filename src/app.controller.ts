@@ -3,6 +3,7 @@ import { LocalAuthGuard } from './auth/local-auth.guard';
 import { AuthService } from './auth/auth.service';
 import { AuthGuard } from '@nestjs/passport';
 
+// 下面是两种 Passport 策略,护照本地策略和护照 jwt 策略
 @Controller()
 export class AppController {
   constructor(private readonly authService: AuthService) {}
