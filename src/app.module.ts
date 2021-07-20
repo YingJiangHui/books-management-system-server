@@ -14,7 +14,7 @@ import { RolesGuard } from './roles/roles.guard';
   controllers: [AppController],
   providers: [AppService,  {
     provide: APP_GUARD,
-    useClass: RolesGuard,
+    useClass: RolesGuard, // 在全局中注册 RolesGuard 守卫
   },],
 })
 export class AppModule {

@@ -1,7 +1,9 @@
 import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { AuthService } from './auth/auth.service';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { Roles } from './roles/roles.decorator';
+import { Role } from './roles/role.enum';
 
 // 下面是两种 Passport 策略,护照本地策略和护照 jwt 策略
 @Controller()
@@ -15,7 +17,8 @@ export class AppController {
     return this.authService.login(req.user);
   }
   
-  @UseGuards(AuthGuard('jwt')) // 测试代码，受jwt保护的jwt守卫
+  @UseGuards(JwtAuthGuard) // 测试代码，受jwt保护的jwt守卫
+  @Roles(Role.User)
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
