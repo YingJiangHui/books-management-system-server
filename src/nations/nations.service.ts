@@ -12,4 +12,8 @@ export class NationsService {
   find(): Promise<Nation[]> {
     return this.nationsRepository.find();
   }
+  findOne(id:number): Promise<Nation> {
+    return this.nationsRepository.findOne(id);
+  }
+
 }

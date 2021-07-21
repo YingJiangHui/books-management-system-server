@@ -8,6 +8,7 @@ import { Nation } from './nation.entity';
   imports: [TypeOrmModule.forFeature([Nation])], // 导入实体
   controllers: [NationsController],
   providers: [NationsService],
+  exports:[NationsService]
 })
 export class NationsModule {
 }

@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
-import { Role } from '../roles/role.entity';
 
 
 @Injectable()
@@ -20,6 +19,7 @@ export class UsersService {
       relations:['roles']
     })
   }
+  
   async createOne(user: User): Promise<User> {
     await this.usersRepository.create(user)
     return this.usersRepository.save(user);

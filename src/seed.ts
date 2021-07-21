@@ -19,8 +19,8 @@ createConnection().then(async connection => {
   const {manager}=connection
   const roles = roleList.map((role)=>new Role({name:role}))
   const nations = nationList.map((nation)=>new Nation({name:nation}))
-  const user = new User({username:'user',passwordDigest:userPassword,roles: roles.slice(0,1),nation:nations[Math.floor(Math.random()*56)]})
-  const admin = new User({username:'admin',passwordDigest:adminPassword,roles: roles.slice(1,2),nation:nations[Math.floor(Math.random()*56)]})
+  const user = new User({username:'user',confirmPassword:userPassword,roles: roles.slice(0,1),nation:nations[Math.floor(Math.random()*56)]})
+  const admin = new User({username:'admin',confirmPassword:adminPassword,roles: roles.slice(1,2),nation:nations[Math.floor(Math.random()*56)]})
   await manager.save(roles)
   await manager.save(nations)
   await manager.save(user)

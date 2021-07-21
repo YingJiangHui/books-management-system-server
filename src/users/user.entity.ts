@@ -1,47 +1,59 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOne } from 'typeorm';
+import { Entity,Column,PrimaryGeneratedColumn,ManyToMany,JoinTable,ManyToOne } from 'typeorm';
 import { Role } from '../roles/role.entity';
 import { Nation } from '../nations/nation.entity';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const _ = require('lodash')
 
-type FieldErrors<P extends string> ={[K in P]:string[]}
+type FieldError = { field: string,subErrors: string[] }
+
 @Entity()
 export class User {
-  constructor(user:Partial<User>) {
-    Object.assign(this,user)
+  constructor(user: Partial<User>) {
+    this.errors = [];
+    Object.assign(this,user);
+    if(!this.validatePasswordDigest())
+      this.addError({field:'password',subErrors:['两次密码不相同']})
   }
+  
   @PrimaryGeneratedColumn('increment')
   readonly id?: number;
-
+  
   @Column('varchar')
   username: string;
-
-  @Column('varchar')
-  passwordDigest: string;
   
-  @Column({type: 'varchar',nullable: true })
+  @Column('varchar')
+  private passwordDigest: string;
+  
+  @Column({ type: 'varchar',nullable: true })
   email?: string;
   
-  @ManyToOne(()=> Nation,nation => nation.user)
-  nation?:Nation;
+  @ManyToOne(() => Nation,nation => nation.user)
+  nation?: Nation;
   
-  @ManyToMany(()=>Role)
+  @ManyToMany(() => Role)
   @JoinTable()
-  roles:Role[];
+  roles: Role[];
   
   password?: string;
+  
   confirmPassword?: string;
   
-  errors: FieldErrors<"username"|"confirmPassword"|"password"|"email"|"nation">
+  errors: FieldError[];
   
-  validate() {
-    if(this.confirmPassword!==this.password){
-      this.errors.password.push('两次密码不相同')
-    }
-    if(this.password.length<6&&this.password.length>18){
-      this.errors.password.push('密码长度在6-18位之间')
-    }
-    return this
+  addError(error: FieldError|FieldError[]) {
+    this.errors = this.errors.concat(error);
+  }
+  getPasswordDigest(){
+    return this.passwordDigest
+  }
+  validatePasswordDigest() {
+    const isEqual = this.password === this.confirmPassword;
+    if (isEqual)
+      this.passwordDigest = this.password;
+    return isEqual;
   }
   
-  
-  
+  toJSON() {
+    return _.omit(this, ['password', 'confirmPassword', 'passwordDigest', 'errors'])
+  }
 }
