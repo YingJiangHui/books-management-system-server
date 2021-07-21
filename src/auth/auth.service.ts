@@ -13,10 +13,12 @@ export class AuthService {
   
   async validateUser(username:string,password:string):Promise<Partial<User>|null>{
     const user = await this.usersService.findOne(username);
-    const match = bcrypt.compareSync(password, user.passwordDigest);
-    if (match) {
-      const { passwordDigest, ...result } = user;
-      return result;
+    if(user){
+      const match = bcrypt.compareSync(password, user.passwordDigest);
+      if (match) {
+        const { passwordDigest, ...result } = user;
+        return result;
+      }
     }
     return null;
   }
