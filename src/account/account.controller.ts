@@ -45,8 +45,13 @@ export class AccountController {
     }
     
     if(user.errors.length)
-      throw new  BadRequestException(user.errors)
+      throw new BadRequestException(user.errors)
     
     return this.usersService.createOne(user)
+  }
+  
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) res:Response) {
+    res.clearCookie('jwt')
   }
 }
