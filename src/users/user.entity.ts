@@ -3,6 +3,7 @@ import { Role } from '../roles/role.entity';
 import { Nation } from '../nations/nation.entity';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const _ = require('lodash')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 
 type FieldError = { field: string,subErrors: string[] }
 
@@ -11,13 +12,11 @@ export class User {
   constructor(user: Partial<User>) {
     this.errors = [];
     Object.assign(this,user);
-    if(!this.validatePasswordDigest())
-      this.addError({field:'password',subErrors:['两次密码不相同']})
+    this.validatePasswordDigest()
   }
   
   @PrimaryGeneratedColumn('increment')
   readonly id?: number;
-  
   @Column('varchar')
   username: string;
   
@@ -43,14 +42,25 @@ export class User {
   addError(error: FieldError|FieldError[]) {
     this.errors = this.errors.concat(error);
   }
+  encryptPass(hashFunctor:(pass:string)=>string){
+    if(this.validatePasswordDigest())
+      this.passwordDigest = this.password = this.passwordDigest = hashFunctor(this.password)
+  }
+  
+  comparePass(compareFunctor:(pass:string)=>boolean):boolean {
+    return compareFunctor(this.getPasswordDigest())
+  }
+  
   getPasswordDigest(){
     return this.passwordDigest
   }
   validatePasswordDigest() {
-    const isEqual = this.password === this.confirmPassword;
-    if (isEqual)
-      this.passwordDigest = this.password;
-    return isEqual;
+    if(this.password === this.confirmPassword && typeof this.password === 'string'){
+      return true
+    }else{
+      this.addError({field:'password',subErrors:['两次密码不相同']});
+      return false
+    }
   }
   
   toJSON() {

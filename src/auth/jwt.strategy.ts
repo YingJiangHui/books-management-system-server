@@ -1,7 +1,7 @@
 import { Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { jwtConstants } from './constants';
+import { jwtConstants } from '../constants';
 
 // 使用cookies中的token认证
 const cookieExtractor = function(req) {

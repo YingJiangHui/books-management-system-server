@@ -4,14 +4,14 @@ import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './local.strategy';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
+import { jwtConstants } from '../constants';
 import { JwtStrategy } from './jwt.strategy';
 
 //通过导入 JWT 签名时使用的相同密钥，我们可以确保 Passport 执行的验证阶段和 AuthService 执行的签名阶段使用公共密钥。
 @Module({
   imports:[
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.register({ secret: jwtConstants.secret,signOptions: { expiresIn: '600s' }, }),
+    JwtModule.register({ secret: jwtConstants.secret,signOptions: { expiresIn: '86400' }, }),
     UsersModule
   ],
   providers: [AuthService,LocalStrategy,JwtStrategy],
