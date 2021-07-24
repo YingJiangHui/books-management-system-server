@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from '../users/user.entity';
 
 @Entity()
 export class Role {
@@ -7,7 +8,11 @@ export class Role {
   }
   @PrimaryGeneratedColumn('increment')
   readonly id?: number;
-
-  @Column('varchar')
+  
+  @Column({type: 'varchar',unique:true })
   name: string
+  
+  @ManyToMany(()=>User)
+  @JoinTable()
+  user?: User[]
 }
