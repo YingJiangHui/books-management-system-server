@@ -10,7 +10,6 @@ export class Category {
   name:string
   
   @ManyToMany(()=>Book)
-  @JoinTable()
   books?: Book[]
 }
 

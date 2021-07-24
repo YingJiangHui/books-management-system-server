@@ -13,6 +13,5 @@ export class Role {
   name: string
   
   @ManyToMany(()=>User)
-  @JoinTable()
   user?: User[]
 }
