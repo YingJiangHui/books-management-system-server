@@ -9,7 +9,7 @@ export class CreateUserDto{
   @IsNotEmpty()
   confirmPassword:string;
   
-  @IsEmail()
+  @IsEmail({},{message:()=>"你需要使用一个正确的邮箱"})
   email:string;
   
   @IsNotEmpty()
