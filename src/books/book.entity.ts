@@ -40,8 +40,6 @@ export class Book {
   @Column('varchar')
   publicationDate?: string
   
-  @Column('')
-  
   @ManyToMany(()=>Category)
   @JoinTable()
   categories: Category[]
