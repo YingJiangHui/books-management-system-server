@@ -13,9 +13,9 @@ export class Publisher {
   books: Book[]
   
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt?: Date;
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt?: Date;
 }
 
 export default Publisher

@@ -20,9 +20,9 @@ export class Comment {
   book: Book
   
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt?: Date;
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt?: Date;
 }
 
 export default Comment

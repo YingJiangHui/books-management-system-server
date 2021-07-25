@@ -43,9 +43,9 @@ export class User {
   roles: Role[];
   
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt?: Date;
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt?: Date;
   
   password?: string;
   

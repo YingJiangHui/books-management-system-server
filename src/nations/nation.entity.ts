@@ -15,7 +15,7 @@ export class Nation {
   user?:User[];
   
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt?: Date;
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt?: Date;
 }
