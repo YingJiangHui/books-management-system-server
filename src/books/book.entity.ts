@@ -14,17 +14,33 @@ import Comment from '../comments/comment.entity';
 
 @Entity()
 export class Book {
+  constructor(book?:Book) {
+    Object.assign(this,book)
+  }
+  
+  
   @PrimaryGeneratedColumn('increment')
-  readonly id:number
+  readonly id?:number
 
   @Column('varchar')
   name:string
   
-  @Column({type:'varchar',unique:true})
-  code:string
+  // @Column({type:'varchar',unique:true})
+  // isbn? :string
+  
+  @Column('varchar')
+  imagePath?: string
   
   @Column('varchar')
   description?: string
+  
+  @Column('varchar')
+  author?: string
+  
+  @Column('varchar')
+  publicationDate?: string
+  
+  @Column('')
   
   @ManyToMany(()=>Category)
   @JoinTable()
@@ -34,7 +50,8 @@ export class Book {
   publisher:Publisher
   
   @OneToMany(()=>Comment,comment=>comment.book)
-  comments:Comment[]
+  comments?:Comment[]
+  
   
   @CreateDateColumn()
   createdAt?: Date;

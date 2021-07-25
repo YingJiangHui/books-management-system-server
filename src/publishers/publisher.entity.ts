@@ -3,14 +3,18 @@ import Book from '../books/book.entity';
 
 @Entity()
 export class Publisher {
+  constructor(publisher?:Publisher) {
+    Object.assign(this,publisher)
+  }
+  
   @PrimaryGeneratedColumn('increment')
-  readonly id:number
+  readonly id?:number
   
   @Column({type: 'varchar',unique:true })
   name:string
   
   @OneToMany(()=>Book,book=>book.publisher)
-  books: Book[]
+  books?: Book[]
   
   @CreateDateColumn()
   createdAt?: Date;
