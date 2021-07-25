@@ -9,11 +9,11 @@ import { Role as RoleEnum } from '../roles/role.enum';
 
 
 @UseGuards(JwtAuthGuard,RolesGuard)
-@Controller('book')
+@Controller('books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
   
-  @Get('list')
+  @Get()
   async getBooks( @Query() params: BookQueryParam){
     const [bookList,count] = await this.booksService.find(params)
     return {
