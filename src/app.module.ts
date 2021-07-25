@@ -6,22 +6,15 @@ import { Connection } from 'typeorm';
 import { AccountModule } from './account/account.module';
 import { NationsModule } from './nations/nations.module';
 import { UsersModule } from './users/users.module';
-import { BooksController } from './books/books.controller';
-import { BooksService } from './books/books.service';
 import { BooksModule } from './books/books.module';
 import { PublishersModule } from './publishers/publishers.module';
-import { CategoriesService } from './categorys/categories.service';
-import { CategoriesController } from './categorys/categories.controller';
 import { CategoriesModule } from './categorys/categories.module';
-import { PublishersService } from './publishers/publishers.service';
-import { CommentsService } from './comments/comments.service';
-import { CommentsController } from './comments/comments.controller';
 import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot(),AccountModule,NationsModule,UsersModule, BooksModule, PublishersModule, CategoriesModule, CommentsModule],
-  controllers: [AppController, BooksController, CategoriesController,CategoriesController, CommentsController],
-  providers: [AppService, BooksService, CategoriesService,PublishersService, CommentsService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {
   // 注入connection后在整个项目中都可是使用不需要再导入，使用方法在类的构造函数中传递即可

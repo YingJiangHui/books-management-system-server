@@ -1,20 +1,20 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
-import { BooksService } from '../books/books.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CategoriesService } from './categories.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('categories')
 export class CategoriesController {
-  constructor(private readonly booksService: BooksService) {}
+  constructor(private readonly categoriesService: CategoriesService) {}
   
   @Get()
   getCategories() {
-    return this.booksService.find()
+    return this.categoriesService.find()
   }
   
   @Get(':id')
   getCategory(@Param('id') id:number) {
-    return this.booksService.findOne(id)
+    return this.categoriesService.findOne(id)
   }
   
 }
