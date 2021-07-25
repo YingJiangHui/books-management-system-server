@@ -28,16 +28,16 @@ export class Book {
   // @Column({type:'varchar',unique:true})
   // isbn? :string
   
-  @Column('varchar')
+  @Column({ type: 'varchar',nullable: true })
   imagePath?: string
   
-  @Column('varchar')
+  @Column({ type: 'varchar',nullable: true })
   description?: string
   
-  @Column('varchar')
+  @Column({ type: 'varchar',nullable: true })
   author?: string
   
-  @Column('varchar')
+  @Column({ type: 'varchar',nullable: true })
   publicationDate?: string
   
   @ManyToMany(()=>Category)
