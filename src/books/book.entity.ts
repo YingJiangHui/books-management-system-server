@@ -1,6 +1,7 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import Publisher from '../publishers/publisher.entity';
 import Category from '../categorys/category.entity';
+import Comment from '../comments/comment.entity';
 
 @Entity()
 export class Book {
@@ -10,11 +11,20 @@ export class Book {
   @Column('varchar')
   name:string
   
+  @Column({type:'varchar',unique:true})
+  code:string
+  
+  @Column('varchar')
+  description?: string
+  
   @ManyToMany(()=>Category)
   @JoinTable()
   categories: Category[]
   
   @ManyToOne(()=>Publisher,publisher=>publisher.books)
   publisher:Publisher
+  
+  @OneToMany(()=>Comment,comment=>comment.book)
+  comments:Comment[]
 }
 export default Book

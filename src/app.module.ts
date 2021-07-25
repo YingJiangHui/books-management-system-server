@@ -14,11 +14,14 @@ import { CategoriesService } from './categorys/categories.service';
 import { CategoriesController } from './categorys/categories.controller';
 import { CategoriesModule } from './categorys/categories.module';
 import { PublishersService } from './publishers/publishers.service';
+import { CommentsService } from './comments/comments.service';
+import { CommentsController } from './comments/comments.controller';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(),AccountModule,NationsModule,UsersModule, BooksModule, PublishersModule, CategoriesModule],
-  controllers: [AppController, BooksController, CategoriesController,CategoriesController],
-  providers: [AppService, BooksService, CategoriesService,PublishersService],
+  imports: [TypeOrmModule.forRoot(),AccountModule,NationsModule,UsersModule, BooksModule, PublishersModule, CategoriesModule, CommentsModule],
+  controllers: [AppController, BooksController, CategoriesController,CategoriesController, CommentsController],
+  providers: [AppService, BooksService, CategoriesService,PublishersService, CommentsService],
 })
 export class AppModule {
   // 注入connection后在整个项目中都可是使用不需要再导入，使用方法在类的构造函数中传递即可
