@@ -1,32 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Book from './book.entity';
-import { ILike, Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 
-export type BookQueryParam = Partial<{ categoryName: string, publisherName: string, bookName: string, paging:Common.Paging }>
+const defaultPaging:Common.Paging = {
+  orderBy: {'book.id':'DESC'},
+  skip:null,
+  limit:null,
+}
+
+export type BookQuery = Partial<{ categoryName: string, publisherName: string, bookName: string,categoryId:number,bookId:number,publisherId:number, paging:Common.Paging }>
 
 @Injectable()
 export class BooksService {
-  constructor(@InjectRepository(Book) private booksRepository: Repository<Book>) {
+  constructor(@InjectRepository(Book) private booksRepository: Repository<Book>,private readonly connection: Connection) {
   }
   
-  find(query?:BookQueryParam) {
-    const { categoryName = '', publisherName = '', bookName = '', paging} = query;
-    return this.booksRepository.findAndCount({ //使用聚合查询，记录数量
-      where: [
-        {
-          name: ILike(`%${bookName} #%`),
-          categories: {
-            name: ILike(`%${categoryName} #%`)
-          },
-          publisher: {
-            name: ILike(`%${publisherName} #%`)
-          }
-        }
-      ],
-      relations: ['categories', 'publisher'],
-      ...paging,
-    });
+  find(query?:BookQuery) {
+    const { paging=defaultPaging,bookName,publisherName,categoryName,categoryId,bookId,publisherId} = query;
+    
+    return this.booksRepository.createQueryBuilder('book')
+      .innerJoinAndSelect('book.publisher','publisher')
+      .innerJoinAndSelect('book.categories','category')
+      .where('category.name LIKE :categoryName AND book.name LIKE :bookName AND publisher.name LIKE :publisherName',{categoryName:`%${categoryName}%`,bookName:`%${bookName}%`,publisherName:`%${publisherName}%`})
+      .getMany()
   }
   
   findOne(id: number) {

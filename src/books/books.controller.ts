@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { BookQueryParam, BooksService } from './books.service';
+import { BookQuery, BooksService } from './books.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import Book from './book.entity';
 import { RolesGuard } from '../roles/roles.guard';
@@ -14,11 +14,10 @@ export class BooksController {
   constructor(private readonly booksService: BooksService) {}
   
   @Get()
-  async getBooks( @Query() params: BookQueryParam){
-    const [bookList,count] = await this.booksService.find(params)
+  async getBooks( @Query() query: BookQuery){
+    const bookList = await this.booksService.find(query)
     return {
       content: bookList,
-      total:count
     }
   }
   

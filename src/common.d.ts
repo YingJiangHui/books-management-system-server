@@ -1,9 +1,9 @@
 declare namespace Common{
-  type Order ={ [K in string]:"DESC"|"ASC"}
+  type OrderBy ={ [K in string]:"DESC"|"ASC"}
   
   type Paging = {
-    take: number,
+    limit: number,
     skip: number,
-    order: Order
+    orderBy: OrderBy
   }
 }
