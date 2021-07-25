@@ -1,4 +1,13 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn, UpdateDateColumn
+} from 'typeorm';
 import Publisher from '../publishers/publisher.entity';
 import Category from '../categorys/category.entity';
 import Comment from '../comments/comment.entity';
@@ -26,5 +35,10 @@ export class Book {
   
   @OneToMany(()=>Comment,comment=>comment.book)
   comments:Comment[]
+  
+  @CreateDateColumn()
+  createdAt: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
 export default Book

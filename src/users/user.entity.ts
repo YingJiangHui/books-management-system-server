@@ -1,4 +1,13 @@
-import { Entity,Column,PrimaryGeneratedColumn,ManyToMany,JoinTable,ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+  JoinTable,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn
+} from 'typeorm';
 import { Role } from '../roles/role.entity';
 import { Nation } from '../nations/nation.entity';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -32,6 +41,11 @@ export class User {
   @ManyToMany(() => Role)
   @JoinTable()
   roles: Role[];
+  
+  @CreateDateColumn()
+  createdAt: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
   
   password?: string;
   

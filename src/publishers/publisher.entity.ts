@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import Book from '../books/book.entity';
 
 @Entity()
@@ -11,6 +11,11 @@ export class Publisher {
   
   @OneToMany(()=>Book,book=>book.publisher)
   books: Book[]
+  
+  @CreateDateColumn()
+  createdAt: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
 
 export default Publisher
