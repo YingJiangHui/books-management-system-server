@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Book from './book.entity';
-import { Connection, Repository } from 'typeorm';
+import { Brackets, Connection, Repository } from 'typeorm';
 
 const defaultPaging:Common.Paging = {
   orderBy: {'book.id':'DESC'},
-  skip:null,
-  limit:null,
+  current:null,
+  size:null,
 }
 
-export type BookQuery = Partial<{ categoryName: string, publisherName: string, bookName: string,categoryId:number,bookId:number,publisherId:number, paging:Common.Paging }>
+export type BookQuery = Partial<{ categoryName: string, publisherName: string, bookName: string,categoryId:number,bookId:number,publisherId:number }&Common.Paging>
 
 @Injectable()
 export class BooksService {
@@ -17,12 +17,20 @@ export class BooksService {
   }
   
   find(query?:BookQuery) {
-    const { paging=defaultPaging,bookName,publisherName,categoryName,categoryId,bookId,publisherId} = query;
-    
+    const { bookName,publisherName,categoryName,categoryId ,current,size,orderBy} = query;
     return this.booksRepository.createQueryBuilder('book')
       .innerJoinAndSelect('book.publisher','publisher')
       .innerJoinAndSelect('book.categories','category')
-      .where('category.name LIKE :categoryName AND book.name LIKE :bookName AND publisher.name LIKE :publisherName',{categoryName:`%${categoryName}%`,bookName:`%${bookName}%`,publisherName:`%${publisherName}%`})
+      .where('category.name LIKE :categoryName AND book.name LIKE :bookName AND publisher.name LIKE :publisherName',{categoryName:`%${categoryName?categoryName:''}%`,bookName:`%${bookName?bookName:''}%`,publisherName:`%${publisherName?publisherName:''}%`})
+      .andWhere(new Brackets((qb)=>{
+        if(categoryId)
+          qb.where('category.id = :id ',{id:Number(categoryId)})
+        else
+          qb.where('category.id>=0')
+      }))
+      .orderBy(orderBy)
+      .limit(size)
+      .skip(current*size)
       .getMany()
   }
   
