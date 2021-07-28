@@ -22,7 +22,14 @@ export class BooksService {
         else
           qb.where('category.id>=0')
       }))
-      .getMany()
+      .select([
+      "book.id",
+      "book.name",
+      "book.description",
+      "category.name",
+      "publisher.name",
+    ])
+      .getRawMany()
   }
   
   findOne(id: number) {
