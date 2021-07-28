@@ -17,7 +17,7 @@ export class BooksController {
   async getBooks( @Query() query: BookQuery){
     const bookList = await this.booksService.find(query)
     return {
-      content: bookList,
+      data: bookList,
     }
   }
   
