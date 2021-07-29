@@ -11,25 +11,19 @@ export class BooksService {
   }
   
   find(query?:BookQuery) {
-    const { searchText, categoryId } = query;
+    const { author,categories,name,publisher } = query;
     return this.booksRepository.createQueryBuilder('book')
       .innerJoinAndSelect('book.publisher','publisher')
       .innerJoinAndSelect('book.categories','category')
-      .where('category.name LIKE :categoryName AND book.name LIKE :bookName AND publisher.name LIKE :publisherName',{categoryName:`%${searchText?searchText:''}%`,bookName:`%${searchText?searchText:''}%`,publisherName:`%${searchText?searchText:''}%`})
-      .andWhere(new Brackets((qb)=>{
-        if(categoryId)
-          qb.where('category.id = :id ',{id:Number(categoryId)})
-        else
-          qb.where('category.id>=0')
-      }))
-      .select([
-      "book.id",
-      "book.name",
-      "book.description",
-      "category.name",
-      "publisher.name",
-    ])
-      .getRawMany()
+      .where('category.name LIKE :categoryName AND book.name LIKE :bookName AND publisher.name LIKE :publisherName AND book.author LIKE  :authorName',
+      {categoryName:`%${categories?categories:''}%`,bookName:`%${name?name:''}%`,publisherName:`%${publisher?publisher:''}%`,authorName:`%${author?author:''}%`})
+      // .andWhere(new Brackets((qb)=>{
+      //   if(categoryId)
+      //     qb.where('category.id = :id ',{id:Number(categoryId)})
+      //   else
+      //     qb.where('category.id>=0')
+      // }))
+      .getMany()
   }
   
   findOne(id: number) {
