@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import Book from './book.entity';
 import { Brackets, Connection, Repository } from 'typeorm';
 
-export type BookQuery = Partial<{ searchText,categoryId:number,bookId:number,publisherId:number }&Common.Paging>
+export type BookQuery = Partial<{ searchText,categoryId:number,bookId:number,publisherId:number }& Common.pagination>
 
 @Injectable()
 export class BooksService {

@@ -1,9 +1,9 @@
 declare namespace Common{
   type OrderBy ={ [K in string]:"DESC"|"ASC"}
   
-  type Paging = {
+  type pagination = {
     size: number,
-    current: number,
-    orderBy: OrderBy
+    page: number,
+    sort: OrderBy
   }
 }
