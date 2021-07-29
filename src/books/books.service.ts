@@ -40,8 +40,6 @@ export class BooksService {
   }
   
   update(id:number,book: Book) {
-    return this.booksRepository.createQueryBuilder('book').update(Book).set({
-    
-    });
+    return this.booksRepository.query(`UPDATE book`)
   }
 }
