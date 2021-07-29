@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import Book from './book.entity';
 import { Brackets, Connection, Repository } from 'typeorm';
 
-export type BookQuery = Partial<{ searchText,categoryId:number,bookId:number,publisherId:number }& Common.pagination>
+export type BookQuery = Partial<{ author:string,categories:string,name:string,publisher:string }&Common.Pagination>
 
 @Injectable()
 export class BooksService {
@@ -40,6 +40,8 @@ export class BooksService {
   }
   
   update(id:number,book: Book) {
-    return this.booksRepository.update({ id }, book);
+    return this.booksRepository.createQueryBuilder('book').update(Book).set({
+    
+    });
   }
 }

@@ -5,6 +5,9 @@ import Book from './book.entity';
 import { RolesGuard } from '../roles/roles.guard';
 import { Roles } from '../roles/roles.decorator';
 import { Role as RoleEnum } from '../roles/role.enum';
+import { BookDto } from './book.dto';
+import Category from '../categorys/category.entity';
+import Publisher from '../publishers/publisher.entity';
 
 
 
@@ -34,8 +37,13 @@ export class BooksController {
   
   @Roles(RoleEnum.Admin)
   @Patch(':id')
-  async updateBooks( @Param('id') id: number, @Body() body: Book){
-    return await this.booksService.update(id, body)
+  async updateBooks( @Param('id') id: number, @Body() body: BookDto){
+    const {name,description,publicationDate,imagePath,author} = body
+    console.log(body)
+    // const categories = body.categories.map((category)=>new Category({name: category.name}))
+    // const publisher = new Publisher({name: body.publisher})
+    // const book = new Book({name,description,publicationDate,author,imagePath,categories,publisher})
+    // return await this.booksService.update(id, book)
   }
   
   @Roles(RoleEnum.Admin)
