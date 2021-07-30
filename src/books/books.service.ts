@@ -23,6 +23,7 @@ export class BooksService {
       //   else
       //     qb.where('category.id>=0')
       // }))
+      .orderBy('book.id', "DESC")
       .getMany()
   }
   
