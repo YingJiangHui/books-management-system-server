@@ -11,8 +11,14 @@ export class PublishersService {
     return this.publisherRepository.findOne(id);
   }
   
-  find(){
-    return this.publisherRepository.find();
+  find(idList?:number[]){
+    if(idList){
+      return this.publisherRepository.find({
+        where:idList.map((id)=>({id}))
+      })
+    }else{
+      return this.publisherRepository.find();
+    }
   }
   
   create(publisher:Publisher){

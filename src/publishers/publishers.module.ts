@@ -8,5 +8,6 @@ import Publisher from './publisher.entity';
   imports: [TypeOrmModule.forFeature([Publisher])],
   controllers: [PublishersController],
   providers: [PublishersService],
+  exports:[PublishersService]
 })
 export class PublishersModule {}
