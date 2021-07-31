@@ -26,9 +26,6 @@ export class Book {
   @Column('varchar')
   name:string
   
-  @Column({type:'varchar',unique:true})
-  isbn? :string
-  
   @Column({ type: 'varchar',nullable: true })
   imagePath?: string
   
@@ -41,23 +38,21 @@ export class Book {
   @Column({ type: 'varchar',nullable: true })
   publicationDate?: string
   
-  @Column({type:'int'})
+  @Column({type:'int',nullable:true})
   totalQuantity?: number
   
-  @Column({type:'int'})
+  @Column({type:'int',nullable:true})
   residualQuantity?: number
   
   @ManyToMany(()=>Category)
   @JoinTable()
   categories: Category[]
+  
   @ManyToOne(()=>Publisher,publisher=>publisher.books)
   publisher:Publisher
   
   @OneToMany(()=>Comment,comment=>comment.book)
   comments?:Comment[]
-  
-  @OneToOne(()=>BorrowBook)
-  borrowBook?: BorrowBook
   
   @CreateDateColumn()
   createdAt?: Date;

@@ -9,7 +9,7 @@ import {
 import { User } from '../../users/user.entity';
 import Book from '../../books/book.entity';
 
-export type BorrowBookStatus = 'APPLIED'|'BORROWED'|'RETURNED'|'RESERVED'|'LOST'
+export type BorrowBookStatus = 'ACTION'|'APPLIED'|'BORROWED'|'RETURNED'|'RESERVED'|'LOST'
 @Entity()
 export class BorrowBook {
   @PrimaryGeneratedColumn('increment')
@@ -17,19 +17,19 @@ export class BorrowBook {
   @OneToOne(()=>User,(user)=>user.borrowBook)
   user: User
   
-  @OneToOne(()=>Book,(book)=>book.borrowBook)
+  @OneToOne(()=>Book)
   book: Book
   
-  @Column({type:'int'})
+  @Column({type:'int',nullable: true})
   quantity: number
   
-  @Column({type:'date',nullable:true})
+  @Column({type:'date'})
   startedDate: string
   
-  @Column({type:'date',nullable:true})
+  @Column({type:'date'})
   endDate: string
   
-  @Column({type:'varchar',nullable:true})
+  @Column({type:'varchar',default:'ACTION'})
   status: BorrowBookStatus
   
   @CreateDateColumn()
