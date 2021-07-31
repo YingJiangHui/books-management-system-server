@@ -6,7 +6,7 @@ import {
   JoinTable,
   ManyToOne,
   CreateDateColumn,
-  UpdateDateColumn, OneToOne
+  UpdateDateColumn, OneToOne, OneToMany
 } from 'typeorm';
 import { Role } from '../roles/role.entity';
 import { Nation } from '../nations/nation.entity';
@@ -42,6 +42,9 @@ export class User {
   @ManyToMany(() => Role)
   @JoinTable()
   roles: Role[];
+
+  @ManyToMany(() => BorrowBook,borrowBook => borrowBook.user)
+  borrowBooks?: BorrowBook[];
   
   
   @CreateDateColumn()

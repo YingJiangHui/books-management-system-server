@@ -54,6 +54,9 @@ export class Book {
   @OneToMany(()=>Comment,comment=>comment.book)
   comments?:Comment[]
   
+  @OneToMany(()=>BorrowBook,borrowBook=>borrowBook.book)
+  borrowBooks?: BorrowBook[]
+  
   @CreateDateColumn()
   createdAt?: Date;
   @UpdateDateColumn()

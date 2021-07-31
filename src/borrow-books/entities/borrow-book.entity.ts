@@ -2,7 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
+  JoinColumn, JoinTable, ManyToMany, ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
@@ -18,11 +18,11 @@ export class BorrowBook {
   }
   @PrimaryGeneratedColumn('increment')
   readonly id?:number
-  @JoinColumn()
-  @OneToOne(()=>User)
+
+  @ManyToOne(()=>User,user=>user.borrowBooks)
   user: User
-  @JoinColumn()
-  @OneToOne(()=>Book)
+  
+  @ManyToOne(()=>Book,book=>book.borrowBooks)
   book: Book
   
   @Column({type:'int',nullable: true})
