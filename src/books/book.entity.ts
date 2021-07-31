@@ -5,12 +5,13 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
-  OneToMany,
+  OneToMany, OneToOne,
   PrimaryGeneratedColumn, UpdateDateColumn
 } from 'typeorm';
 import Publisher from '../publishers/publisher.entity';
 import Category from '../categorys/category.entity';
 import Comment from '../comments/comment.entity';
+import { BorrowBook } from '../borrow-books/entities/borrow-book.entity';
 
 @Entity()
 export class Book {
@@ -25,8 +26,8 @@ export class Book {
   @Column('varchar')
   name:string
   
-  // @Column({type:'varchar',unique:true})
-  // isbn? :string
+  @Column({type:'varchar',unique:true})
+  isbn? :string
   
   @Column({ type: 'varchar',nullable: true })
   imagePath?: string
@@ -39,9 +40,13 @@ export class Book {
   
   @Column({ type: 'varchar',nullable: true })
   publicationDate?: string
-  @Column({type:'int',nullable:true})
-  quantity?: number
-
+  
+  @Column({type:'int'})
+  totalQuantity?: number
+  
+  @Column({type:'int'})
+  residualQuantity?: number
+  
   @ManyToMany(()=>Category)
   @JoinTable()
   categories: Category[]
@@ -51,6 +56,8 @@ export class Book {
   @OneToMany(()=>Comment,comment=>comment.book)
   comments?:Comment[]
   
+  @OneToOne(()=>BorrowBook)
+  borrowBook?: BorrowBook
   
   @CreateDateColumn()
   createdAt?: Date;

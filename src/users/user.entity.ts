@@ -6,10 +6,11 @@ import {
   JoinTable,
   ManyToOne,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { Role } from '../roles/role.entity';
 import { Nation } from '../nations/nation.entity';
+import { BorrowBook } from '../borrow-books/entities/borrow-book.entity';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const _ = require('lodash')
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -41,6 +42,10 @@ export class User {
   @ManyToMany(() => Role)
   @JoinTable()
   roles: Role[];
+  
+  @ManyToOne(()=>BorrowBook)
+  borrowBook?: BorrowBook
+  
   
   @CreateDateColumn()
   createdAt?: Date;
