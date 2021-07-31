@@ -10,7 +10,7 @@ import {
 import { User } from '../../users/user.entity';
 import Book from '../../books/book.entity';
 
-export type BorrowBookStatus = 'ACTION'|'APPLIED'|'BORROWED'|'RETURNED'|'RESERVED'|'LOST'
+export type BorrowBookStatus = 'APPLIED'|'BORROWED'|'RETURNED'|'RESERVED'|'LOST'
 @Entity()
 export class BorrowBook {
   constructor(borrowBook:BorrowBook) {
@@ -34,7 +34,7 @@ export class BorrowBook {
   @Column({type:'date'})
   endDate: string
   
-  @Column({type:'varchar',default:'ACTION'})
+  @Column({type:'varchar',default:'APPLIED'})
   status?: BorrowBookStatus
   
   @CreateDateColumn()

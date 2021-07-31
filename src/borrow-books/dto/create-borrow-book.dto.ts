@@ -13,5 +13,5 @@ export class CreateBorrowBookDto {
   startedDate: string;
   
   @IsNotEmpty()
-  bookId:number
+  bookId:string
 }

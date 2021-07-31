@@ -3,7 +3,7 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
+  Get, InternalServerErrorException,
   Param,
   Patch,
   Post,
@@ -19,13 +19,14 @@ import { Role as RoleEnum } from '../roles/role.enum';
 import { BookDto } from './book.dto';
 import { CategoriesService } from '../categorys/categories.service';
 import { PublishersService } from '../publishers/publishers.service';
+import { BorrowBooksService } from '../borrow-books/borrow-books.service';
 
 
 
 @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('books')
 export class BooksController {
-  constructor(private readonly booksService: BooksService,private readonly categoriesService: CategoriesService,private readonly publishersService: PublishersService) {}
+  constructor(private readonly booksService: BooksService,private readonly categoriesService: CategoriesService,private readonly publishersService: PublishersService,private readonly borrowBooksService: BorrowBooksService) {}
   
   @Get()
   async getBooks( @Query() query: BookQuery){
@@ -64,6 +65,10 @@ export class BooksController {
   @Roles(RoleEnum.Admin)
   @Delete(':id')
   async deleteBooks( @Param('id') id: number){
-    return await this.booksService.delete(id)
+    const borrowBooks = await this.borrowBooksService.findAll({bookId:+id})
+    const can = borrowBooks.filter((borrowBooks)=>borrowBooks.status==='RESERVED').length===borrowBooks.length
+    if(can)
+      return await this.booksService.delete(+id)
+    new InternalServerErrorException('该书本未归还,无法删除')
   }
 }

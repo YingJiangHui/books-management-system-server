@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  Req,
+  UseGuards,
+  InternalServerErrorException
+} from '@nestjs/common';
 import { BorrowBooksService } from './borrow-books.service';
 import { CreateBorrowBookDto } from './dto/create-borrow-book.dto';
 import { UpdateBorrowBookDto } from './dto/update-borrow-book.dto';
@@ -7,11 +19,12 @@ import {Request} from 'express'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../roles/roles.guard';
 import { User } from '../users/user.entity';
-import { BorrowBook } from './entities/borrow-book.entity';
-import Book from '../books/book.entity';
+import { BorrowBook, BorrowBookStatus } from './entities/borrow-book.entity';
+import { endianness } from 'os';
 export type BorrowBookQuery = {
   userId?:number,
   bookId?:number,
+  status?: BorrowBookStatus
 }
 
 @UseGuards(JwtAuthGuard,RolesGuard)
@@ -21,7 +34,19 @@ export class BorrowBooksController {
   @Post()
   async create(@Req() req:Request,@Body() createBorrowBookDto: CreateBorrowBookDto) {
     const {bookId,...borrowBookField} = createBorrowBookDto
-    const book = await this.booksService.findOne(bookId)
+    const occupiedTimeList = await  this.getCanBorrowTime(bookId)
+  
+    const can = occupiedTimeList.filter((occupiedTime)=>{
+      const occupiedEndTime = Date.parse(occupiedTime.endDate)
+      const occupiedStartTime = Date.parse(occupiedTime.startedDate)
+      const endTime = Date.parse(borrowBookField.endDate)
+      const startTime = Date.parse(borrowBookField.startedDate)
+      return (occupiedStartTime < startTime && startTime < occupiedEndTime) || (occupiedStartTime < endTime && endTime < occupiedEndTime);
+    }).length===0
+    if(!can)
+      throw new InternalServerErrorException('该时间段已经被其他用户借阅')
+    
+    const book = await this.booksService.findOne(+bookId)
     const user = new User(req.user)
     const borrowBook = new BorrowBook({...borrowBookField,book,user})
     return this.borrowBooksService.create(borrowBook);
@@ -46,9 +71,21 @@ export class BorrowBooksController {
   update(@Param('id') id: string, @Body() updateBorrowBookDto: UpdateBorrowBookDto) {
     return this.borrowBooksService.update(+id, updateBorrowBookDto);
   }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.borrowBooksService.remove(+id);
+  
+  @Get(':id/time')
+  async getCanBorrowTime(@Param('id') id: string) {
+    const borrowBooks = await this.borrowBooksService.findAll({bookId:+id})
+    const borrowedBooks = borrowBooks.filter((borrowBooks)=>borrowBooks.status!=='RESERVED')
+    return borrowedBooks.map(({startedDate,endDate})=>({ startedDate, endDate }))
   }
+  
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    const borrowBook = await this.borrowBooksService.findOne(+id)
+    if(borrowBook.status==='RESERVED')
+      return this.borrowBooksService.remove(+id);
+    throw new InternalServerErrorException('本次借阅未完成')
+  }
+  
+  
 }
