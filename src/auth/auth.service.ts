@@ -24,7 +24,7 @@ export class AuthService {
   }
   
   async login(user: User) {
-    const payload = { username: user.username, sub: user.id ,roles:user.roles.map((role)=>role.name)};
+    const payload = { username: user.username, sub: user.id ,roles:user.roles.map((role)=>role.name),nation:user.nation,email:user.email,createdAt:user.createdAt};
     return {
       access_token: this.jwtService.sign(payload), // 用于从用户对象属性的子集生成 jwt
     };

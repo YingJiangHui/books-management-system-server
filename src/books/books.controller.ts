@@ -54,7 +54,6 @@ export class BooksController {
   @Patch(':id')
   async updateBooks( @Param('id') id: number, @Body() body: BookDto){
     const {categories,publisher,...book} = body
-    console.log(body)
     const categoryEntityList =  await this.categoriesService.find(categories)
     const publisherEntity = await this.publishersService.find([publisher])
     const bookEntity = new Book({...book,categories:categoryEntityList,publisher:publisherEntity[0]})

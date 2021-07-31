@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
@@ -12,16 +13,20 @@ import Book from '../../books/book.entity';
 export type BorrowBookStatus = 'ACTION'|'APPLIED'|'BORROWED'|'RETURNED'|'RESERVED'|'LOST'
 @Entity()
 export class BorrowBook {
+  constructor(borrowBook:BorrowBook) {
+    Object.assign(this,borrowBook)
+  }
   @PrimaryGeneratedColumn('increment')
   readonly id?:number
-  @OneToOne(()=>User,(user)=>user.borrowBook)
+  @JoinColumn()
+  @OneToOne(()=>User)
   user: User
-  
+  @JoinColumn()
   @OneToOne(()=>Book)
   book: Book
   
   @Column({type:'int',nullable: true})
-  quantity: number
+  quantity?: number
   
   @Column({type:'date'})
   startedDate: string
@@ -30,7 +35,7 @@ export class BorrowBook {
   endDate: string
   
   @Column({type:'varchar',default:'ACTION'})
-  status: BorrowBookStatus
+  status?: BorrowBookStatus
   
   @CreateDateColumn()
   createdAt?: Date;

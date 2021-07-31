@@ -17,7 +17,7 @@ export class UsersService {
     // select user2.id ,user2.username,user2.email,role.name from public.user as user2,role,user_roles_role  where user2.username='user' AND role.id = "roleId" AND user2.id = "userId";
     return this.usersRepository.findOne({
       where:{username},
-      relations:['roles']
+      relations:['roles','nation']
     })
   }
   
