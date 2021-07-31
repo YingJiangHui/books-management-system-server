@@ -39,11 +39,12 @@ export class Book {
   
   @Column({ type: 'varchar',nullable: true })
   publicationDate?: string
-  
+  @Column({type:'int',nullable:true})
+  quantity?: number
+
   @ManyToMany(()=>Category)
   @JoinTable()
   categories: Category[]
-  
   @ManyToOne(()=>Publisher,publisher=>publisher.books)
   publisher:Publisher
   

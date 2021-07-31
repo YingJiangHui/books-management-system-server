@@ -12,6 +12,8 @@ export class BookDto{
   description:string;
   @IsString()
   author:string;
+  @IsNumber()
+  quantity:number;
   @IsISO8601()
   publicationDate: string;
   @IsArray()
