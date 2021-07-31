@@ -43,7 +43,7 @@ const createBook = ()=>
 
 createConnection().then(async connection => {
   const {manager}=connection
-  const instances = createBook()
+  const instances = createUser().concat(createBook())
   for (const Item of instances){
     await manager.save(Item,{})
   }

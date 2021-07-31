@@ -46,10 +46,10 @@ export class Book {
   
   @ManyToMany(()=>Category)
   @JoinTable()
-  categories: Category[]
+  categories?: Category[]
   
   @ManyToOne(()=>Publisher,publisher=>publisher.books)
-  publisher:Publisher
+  publisher?:Publisher
   
   @OneToMany(()=>Comment,comment=>comment.book)
   comments?:Comment[]

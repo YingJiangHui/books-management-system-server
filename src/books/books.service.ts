@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Book from './book.entity';
 import { Brackets, Connection, Repository } from 'typeorm';
+import Category from '../categorys/category.entity';
 
 export type BookQuery = Partial<{ author:string,categories:string,name:string,publisher:string }&Common.Pagination>
 
@@ -13,10 +14,13 @@ export class BooksService {
   find(query?:BookQuery) {
     const { author,categories,name,publisher } = query;
     return this.booksRepository.createQueryBuilder('book')
-      .innerJoinAndSelect('book.publisher','publisher')
-      .innerJoinAndSelect('book.categories','category')
-      .where('category.name LIKE :categoryName AND book.name LIKE :bookName AND publisher.name LIKE :publisherName AND book.author LIKE  :authorName',
-      {categoryName:`%${categories?categories:''}%`,bookName:`%${name?name:''}%`,publisherName:`%${publisher?publisher:''}%`,authorName:`%${author?author:''}%`})
+      .leftJoinAndSelect('book.publisher','publisher')
+      .leftJoinAndSelect('book.categories','category')
+      .where(new Brackets((qb)=>{
+        if(author||categories||publisher)
+        qb.where('category.name LIKE :categoryName AND book.name LIKE :bookName AND publisher.name LIKE :publisherName AND book.author LIKE  :authorName',
+          {categoryName:`%${categories?categories:''}%`,bookName:`%${name?name:''}%`,publisherName:`%${publisher?publisher:''}%`,authorName:`%${author?author:''}%`})
+      }))
       // .andWhere(new Brackets((qb)=>{
       //   if(categoryId)
       //     qb.where('category.id = :id ',{id:Number(categoryId)})
@@ -40,7 +44,22 @@ export class BooksService {
     return this.booksRepository.delete({id});
   }
   
-  update(id:number,book: Book) {
-    return this.booksRepository.query(`UPDATE book`)
+  async deleteCategories(id:number){
+    return this.connection.query(`DELETE FROM book_categories_category WHERE "bookId"=${id}`)
+  }
+  
+  async createCategories(id:number,categories:Category[]){
+    return this.connection.query(`INSERT INTO book_categories_category("bookId","categoryId")  values ${categories.map((category)=>`(${id},${category.id})`).join(',')}`)
+  }
+  
+  async updateCategories(id:number,categories:Category[]){
+    await this.deleteCategories(id)
+    await this.createCategories(id,categories)
+  }
+
+  async update(id:number,book: Book) {
+    const {categories,...bookField} = book
+    await this.updateCategories(id,categories)
+    await this.booksRepository.update({id},bookField)
   }
 }
