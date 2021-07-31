@@ -30,10 +30,7 @@ export class BooksController {
   
   @Get()
   async getBooks( @Query() query: BookQuery){
-    const bookList = await this.booksService.find(query)
-    return {
-      data: bookList,
-    }
+    return this.booksService.find(query)
   }
   
   @Get(':id')

@@ -34,7 +34,7 @@ export class BorrowBooksController {
   @Post()
   async create(@Req() req:Request,@Body() createBorrowBookDto: CreateBorrowBookDto) {
     const {bookId,...borrowBookField} = createBorrowBookDto
-    const occupiedTimeList = await  this.getCanBorrowTime(bookId)
+    const occupiedTimeList = await  this.getOccupiedTimeList(bookId)
   
     const can = occupiedTimeList.filter((occupiedTime)=>{
       const occupiedEndTime = Date.parse(occupiedTime.endDate)
@@ -52,8 +52,8 @@ export class BorrowBooksController {
     return this.borrowBooksService.create(borrowBook);
   }
   
-  @Get('self')
-  findSelf(@Req() req:Request,@Query() query: BorrowBookQuery) {
+  @Get('user')
+  findUser(@Req() req:Request,@Query() query: BorrowBookQuery) {
     return this.borrowBooksService.findAll({...query,userId:req.user['id']});
   }
   
@@ -72,8 +72,8 @@ export class BorrowBooksController {
     return this.borrowBooksService.update(+id, updateBorrowBookDto);
   }
   
-  @Get(':id/time')
-  async getCanBorrowTime(@Param('id') id: string) {
+  @Get(':id/occupied-time')
+  async getOccupiedTimeList(@Param('id') id: string) {
     const borrowBooks = await this.borrowBooksService.findAll({bookId:+id})
     const borrowedBooks = borrowBooks.filter((borrowBooks)=>borrowBooks.status!=='RESERVED')
     return borrowedBooks.map(({startedDate,endDate})=>({ startedDate, endDate }))
