@@ -75,7 +75,7 @@ export class BorrowBooksController {
   @Get(':id/occupied-time')
   async getOccupiedTimeList(@Param('id') id: string) {
     const borrowBooks = await this.borrowBooksService.findAll({bookId:+id})
-    const borrowedBooks = borrowBooks.filter((borrowBooks)=>borrowBooks.status!=='RESERVED')
+    const borrowedBooks = borrowBooks.filter((borrowBooks)=>borrowBooks.status!=='RESERVED'&&borrowBooks.status!=='APPLIED')
     return borrowedBooks.map(({startedDate,endDate})=>({ startedDate, endDate }))
   }
   
