@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateBorrowBookDto } from './dto/update-borrow-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import {  Repository } from 'typeorm';
+import { LessThanOrEqual, MoreThanOrEqual, Not, Repository } from 'typeorm';
 import { BorrowBook } from './entities/borrow-book.entity';
 import { QueryBorrowBookDto } from './dto/query-borrow-book.dto';
+import { FindOneOptions } from 'typeorm/find-options/FindOneOptions';
 
 @Injectable()
 export class BorrowBooksService {
@@ -33,7 +34,9 @@ export class BorrowBooksService {
   }
   
   findOne(id: number) {
-    return this.borrowBookRepository.findOne(id)
+    return this.borrowBookRepository.findOne(id,{
+      relations:['book','user']
+    })
   }
   
   update(id: number, updateBorrowBookDto: UpdateBorrowBookDto) {
@@ -42,5 +45,27 @@ export class BorrowBooksService {
   
   remove(id: number) {
     return this.borrowBookRepository.delete(id)
+  }
+  
+  async checkCanBorrow(condition:QueryBorrowBookDto) {
+    const {userId,startedDate,endDate,status,bookId} = condition
+    const baseCondition:FindOneOptions['where'] = {
+      book:{
+        id:bookId
+      },
+      user:{
+        id:Not(userId)
+      },
+      startedDate: LessThanOrEqual(endDate),
+      endDate: MoreThanOrEqual(startedDate),
+    }
+    const repeatCheck:FindOneOptions['where'] = {book:{id:bookId},user:{id:userId}}
+    const whereCondition:FindOneOptions['where'] = status?(status.map((status)=>({status,...baseCondition})) as FindOneOptions['where']).concat(repeatCheck):baseCondition
+    const borrowedBooks = await this.borrowBookRepository.findAndCount({
+      relations:['book','user'],
+      where:whereCondition,
+    })
+    console.log(borrowedBooks[0]);
+    return borrowedBooks[1]===0
   }
 }

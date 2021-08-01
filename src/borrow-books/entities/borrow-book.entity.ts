@@ -9,7 +9,7 @@ import {
 import { User } from '../../users/user.entity';
 import Book from '../../books/book.entity';
 
-export type BorrowBookStatus = 'APPLIED'|'BORROWED'|'RESERVED'|'RETURNED'|'LOST'|'REFUSE'
+export type BorrowBookStatus = 'APPLIED'|'BORROWED'|'RESERVED'|'RETURNED'|'LOST'|'REFUSE'|'CANCELED'|'RENEWAL'
 @Entity()
 export class BorrowBook {
   constructor(borrowBook:BorrowBook) {
