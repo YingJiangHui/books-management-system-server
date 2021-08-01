@@ -2,15 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn, JoinTable, ManyToMany, ManyToOne,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
 import { User } from '../../users/user.entity';
 import Book from '../../books/book.entity';
 
-export type BorrowBookStatus = 'APPLIED'|'BORROWED'|'RETURNED'|'RESERVED'|'LOST'|'REFUSE'
+export type BorrowBookStatus = 'APPLIED'|'BORROWED'|'RESERVED'|'RETURNED'|'LOST'|'REFUSE'
 @Entity()
 export class BorrowBook {
   constructor(borrowBook:BorrowBook) {

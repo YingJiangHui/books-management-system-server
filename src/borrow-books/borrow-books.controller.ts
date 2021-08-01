@@ -43,8 +43,12 @@ export class BorrowBooksController {
       const startTime = Date.parse(borrowBookField.startedDate)
       return startTime<=occupiedEndTime && endTime>= occupiedStartTime;
     }).length===0
+    
+    if(borrowBookField.status==='REFUSE')
+      throw new InternalServerErrorException('图书遗失无法借阅')
+      
     if(!can)
-      throw new InternalServerErrorException('该时间段已经被其他用户借阅')
+      throw new InternalServerErrorException('该时间段已经有用户借阅')
     
     const book = await this.booksService.findOne(+bookId)
     const user = new User(req.user)
@@ -75,7 +79,7 @@ export class BorrowBooksController {
   @Get(':id/occupied-time')
   async getOccupiedTimeList(@Param('id') id: string) {
     const borrowBooks = await this.borrowBooksService.findAll({bookId:+id})
-    const borrowedBooks = borrowBooks.filter((borrowBooks)=>borrowBooks.status!=='RESERVED')
+    const borrowedBooks = borrowBooks.filter((borrowBooks)=>['RESERVED','BORROWED','APPLIED'].indexOf(borrowBooks.status)!==-1)
     return borrowedBooks.map(({startedDate,endDate})=>({ startedDate, endDate }))
   }
   
