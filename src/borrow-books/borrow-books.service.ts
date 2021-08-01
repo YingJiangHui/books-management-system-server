@@ -18,7 +18,10 @@ export class BorrowBooksService {
   findAll(query?:BorrowBookQuery) {
     const {bookId,userId,status} = query
     if(Object.keys(query).length===0){
-      return this.borrowBookRepository.find();
+      return this.borrowBookRepository.find({
+        relations: ['book','user'],
+        order:{id:"DESC"}
+      });
     }
     const bookCondition = bookId?{book:{id:+bookId}}:{}
     const userCondition =  userId?{user:{id:+userId}}:{}
@@ -29,7 +32,8 @@ export class BorrowBooksService {
         ...statusCondition,
         ...bookCondition,
         ...userCondition,
-      }
+      },
+      order:{id:"DESC"}
     });
   }
   
