@@ -25,14 +25,10 @@ export class BorrowBooksService {
     }
     const bookCondition = bookId?{book:{id:+bookId}}:{}
     const userCondition =  userId?{user:{id:+userId}}:{}
-    const statusCondition = status?{status}:{}
+    const statusCondition = status?status.map((status)=>({status,...bookCondition,...userCondition})):{...bookCondition,...userCondition}
     return this.borrowBookRepository.find({
       relations: ['book','user'],
-      where:{
-        ...statusCondition,
-        ...bookCondition,
-        ...userCondition,
-      },
+      where:statusCondition,
       order:{id:"DESC"}
     });
   }

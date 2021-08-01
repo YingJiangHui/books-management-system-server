@@ -24,7 +24,7 @@ import { BorrowBook, BorrowBookStatus } from './entities/borrow-book.entity';
 export type BorrowBookQuery = {
   userId?:number,
   bookId?:number,
-  status?: BorrowBookStatus
+  status?: BorrowBookStatus[]
 }
 
 @UseGuards(JwtAuthGuard,RolesGuard)
@@ -43,10 +43,12 @@ export class BorrowBooksController {
       const startTime = Date.parse(borrowBookField.startedDate)
       return startTime<=occupiedEndTime && endTime>= occupiedStartTime;
     }).length===0
+  
+    const refuseBooks = await this.borrowBooksService.findAll({bookId:+bookId,status:['LOST']})
     
-    if(borrowBookField.status==='REFUSE')
+    if(refuseBooks.length>0)
       throw new InternalServerErrorException('图书遗失无法借阅')
-      
+    
     if(!can)
       throw new InternalServerErrorException('该时间段已经有用户借阅')
     
@@ -78,8 +80,7 @@ export class BorrowBooksController {
   
   @Get(':id/occupied-time')
   async getOccupiedTimeList(@Param('id') id: string) {
-    const borrowBooks = await this.borrowBooksService.findAll({bookId:+id})
-    const borrowedBooks = borrowBooks.filter((borrowBooks)=>['RESERVED','BORROWED','APPLIED'].indexOf(borrowBooks.status)!==-1)
+    const borrowedBooks = await this.borrowBooksService.findAll({bookId:+id,status:['RESERVED','BORROWED','APPLIED']})
     return borrowedBooks.map(({startedDate,endDate})=>({ startedDate, endDate }))
   }
   
