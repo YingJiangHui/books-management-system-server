@@ -41,7 +41,7 @@ export class BorrowBooksController {
       const occupiedStartTime = Date.parse(occupiedTime.startedDate)
       const endTime = Date.parse(borrowBookField.endDate)
       const startTime = Date.parse(borrowBookField.startedDate)
-      return (occupiedStartTime < startTime && startTime < occupiedEndTime) || (occupiedStartTime < endTime && endTime < occupiedEndTime);
+      return startTime<=occupiedEndTime && endTime>= occupiedStartTime;
     }).length===0
     if(!can)
       throw new InternalServerErrorException('该时间段已经被其他用户借阅')
@@ -75,7 +75,7 @@ export class BorrowBooksController {
   @Get(':id/occupied-time')
   async getOccupiedTimeList(@Param('id') id: string) {
     const borrowBooks = await this.borrowBooksService.findAll({bookId:+id})
-    const borrowedBooks = borrowBooks.filter((borrowBooks)=>borrowBooks.status!=='RESERVED'&&borrowBooks.status!=='APPLIED')
+    const borrowedBooks = borrowBooks.filter((borrowBooks)=>borrowBooks.status!=='RESERVED')
     return borrowedBooks.map(({startedDate,endDate})=>({ startedDate, endDate }))
   }
   
