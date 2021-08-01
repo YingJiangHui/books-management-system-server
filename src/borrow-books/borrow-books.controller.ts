@@ -19,13 +19,8 @@ import {Request} from 'express'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../roles/roles.guard';
 import { User } from '../users/user.entity';
-import { BorrowBook, BorrowBookStatus } from './entities/borrow-book.entity';
-
-export type BorrowBookQuery = {
-  userId?:number,
-  bookId?:number,
-  status?: BorrowBookStatus[]
-}
+import { BorrowBook } from './entities/borrow-book.entity';
+import { QueryBorrowBookDto } from './dto/query-borrow-book.dto';
 
 @UseGuards(JwtAuthGuard,RolesGuard)
 @Controller('borrow-books')
@@ -59,12 +54,12 @@ export class BorrowBooksController {
   }
   
   @Get('user')
-  findUser(@Req() req:Request,@Query() query: BorrowBookQuery) {
+  findUser(@Req() req:Request,@Query() query: QueryBorrowBookDto) {
     return this.borrowBooksService.findAll({...query,userId:req.user['id']});
   }
   
   @Get()
-  findAll(@Req() req:Request,@Query() query: BorrowBookQuery) {
+  findAll(@Req() req:Request,@Query() query: QueryBorrowBookDto) {
     return this.borrowBooksService.findAll({...query});
   }
 

@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBorrowBookDto } from './dto/create-borrow-book.dto';
 import { UpdateBorrowBookDto } from './dto/update-borrow-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
-import { BorrowBook, BorrowBookStatus } from './entities/borrow-book.entity';
-import { BorrowBookQuery } from './borrow-books.controller';
+import {  Repository } from 'typeorm';
+import { BorrowBook } from './entities/borrow-book.entity';
+import { QueryBorrowBookDto } from './dto/query-borrow-book.dto';
 
 @Injectable()
 export class BorrowBooksService {
@@ -15,7 +14,7 @@ export class BorrowBooksService {
     return this.borrowBookRepository.save(createBorrowBookDto)
   }
   
-  findAll(query?:BorrowBookQuery) {
+  findAll(query?:QueryBorrowBookDto) {
     const {bookId,userId,status} = query
     if(Object.keys(query).length===0){
       return this.borrowBookRepository.find({
