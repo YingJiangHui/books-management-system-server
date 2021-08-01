@@ -47,7 +47,7 @@ export class BorrowBooksService {
     return this.borrowBookRepository.delete(id)
   }
   
-  async checkCanBorrow(condition:QueryBorrowBookDto) {
+  async checkIsOtherUserBorrowed(condition:QueryBorrowBookDto) {
     const {userId,startedDate,endDate,status,bookId} = condition
     const baseCondition:FindOneOptions['where'] = {
       book:{
@@ -59,13 +59,24 @@ export class BorrowBooksService {
       startedDate: LessThanOrEqual(endDate),
       endDate: MoreThanOrEqual(startedDate),
     }
-    const repeatCheck:FindOneOptions['where'] = {book:{id:bookId},user:{id:userId}}
-    const whereCondition:FindOneOptions['where'] = status?(status.map((status)=>({status,...baseCondition})) as FindOneOptions['where']).concat(repeatCheck):baseCondition
     const borrowedBooks = await this.borrowBookRepository.findAndCount({
       relations:['book','user'],
-      where:whereCondition,
+      where:status?(status.map((status)=>({status,...baseCondition})) as FindOneOptions['where']):baseCondition,
     })
     console.log(borrowedBooks[0]);
-    return borrowedBooks[1]===0
+    return borrowedBooks[1]!==0
+  }
+  
+  async checkIsAlreadyBorrowed(condition:QueryBorrowBookDto) {
+    const {userId,status,bookId} = condition
+    const baseCondition:FindOneOptions['where'] = {
+      book:{id:bookId},user:{id:userId}
+    }
+    const borrowedBooks = await this.borrowBookRepository.findAndCount({
+      relations:['book','user'],
+      where:status?(status.map((status)=>({status,...baseCondition})) as FindOneOptions['where']):baseCondition,
+    })
+    console.log(borrowedBooks[0]);
+    return borrowedBooks[1]!==0
   }
 }

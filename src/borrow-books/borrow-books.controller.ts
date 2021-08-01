@@ -28,24 +28,27 @@ export class BorrowBooksController {
   constructor(private readonly borrowBooksService: BorrowBooksService, private readonly booksService: BooksService) {
   }
   
-  async checkCanBorrow(@Param('id') bookId: string,query: { endDate: string, startedDate: string ,userId:number}) {
-    const { endDate, startedDate,userId } = query;
-    const can = await this.borrowBooksService.checkCanBorrow({bookId:+bookId, startedDate, endDate, status: ['RESERVED', 'BORROWED', 'APPLIED', 'RENEWAL'], userId});
-    if (!can)
+  async checkCanBorrow(@Param('id') bookId: string, query: { endDate: string, startedDate: string, userId: number }) {
+    const { endDate, startedDate, userId } = query;
+    const isOtherUserBorrowed = await this.borrowBooksService.checkIsOtherUserBorrowed({ bookId: +bookId, startedDate, endDate, status: ['RESERVED', 'BORROWED', 'APPLIED', 'RENEWAL'], userId });
+    if (isOtherUserBorrowed)
       throw new InternalServerErrorException('该时间段已经有其他用户借阅');
     
-    const refuseBooks = await this.borrowBooksService.findAll({ bookId: +bookId, status: ['LOST'] });
+    const isAlreadyBorrowed = await this.borrowBooksService.checkIsAlreadyBorrowed({ bookId: +bookId, status: ['RESERVED', 'APPLIED'], userId });
+    if (isAlreadyBorrowed)
+      throw new InternalServerErrorException('不可重复借阅');
     
+    const refuseBooks = await this.borrowBooksService.findAll({ bookId: +bookId, status: ['LOST'] });
     if (refuseBooks.length > 0)
       throw new InternalServerErrorException('图书遗失无法借阅');
     
-
+    
   }
   
   @Post()
   async create(@Req() req: Request, @Body() createBorrowBookDto: CreateBorrowBookDto) {
     const { bookId, ...borrowBookField } = createBorrowBookDto;
-    await this.checkCanBorrow(bookId, { startedDate: borrowBookField.startedDate, endDate: borrowBookField.endDate,userId:req.user['id']  });
+    await this.checkCanBorrow(bookId, { startedDate: borrowBookField.startedDate, endDate: borrowBookField.endDate, userId: req.user['id'] });
     const book = await this.booksService.findOne(+bookId);
     const user = new User(req.user);
     const borrowBook = new BorrowBook({ ...borrowBookField, book, user });
@@ -69,10 +72,10 @@ export class BorrowBooksController {
   
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateBorrowBookDto: UpdateBorrowBookDto, @Req() req: Request) {
-    const { startedDate, endDate,status } = updateBorrowBookDto;
+    const { startedDate, endDate, status } = updateBorrowBookDto;
     const borrowBook = await this.borrowBooksService.findOne(+id);
-    if(['APPLIED','RENEWAL'].indexOf(status)!==-1){
-      await this.checkCanBorrow(borrowBook.book.id.toString(), { startedDate,endDate, userId: req.user['id'] });
+    if (['APPLIED', 'RENEWAL'].indexOf(status) !== -1) {
+      await this.checkCanBorrow(borrowBook.book.id.toString(), { startedDate, endDate, userId: req.user['id'] });
     }
     return this.borrowBooksService.update(+id, updateBorrowBookDto);
   }
