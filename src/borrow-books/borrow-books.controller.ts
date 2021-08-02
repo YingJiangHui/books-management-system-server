@@ -93,6 +93,5 @@ export class BorrowBooksController {
       return this.borrowBooksService.remove(+id);
     throw new InternalServerErrorException('本次借阅未完成');
   }
-  
-  
+
 }

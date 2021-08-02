@@ -79,21 +79,4 @@ export class BorrowBooksService {
     console.log(borrowedBooks[0]);
     return borrowedBooks[1]!==0
   }
-  
-  async getStatusStatistics() {
-    return this.borrowBookRepository.query(`SELECT status ,count(*) as n FROM borrow_book GROUP BY status`)
-  }
-  
-  async getTopTenBorrowedBook(){
-    return this.borrowBookRepository.query(`SELECT  book.name,"bookId" ,count(*) as n FROM borrow_book ,book where "bookId" = book.id GROUP BY "bookId",book.name ORDER BY n DESC LIMIT 10`)
-  }
-  
-  async getTopTenActiveReader(){
-    return this.borrowBookRepository.query(`SELECT u."username","userId" ,count(*) as n FROM borrow_book, public.user as a where "userId" = u.id GROUP BY "userId",u."username" ORDER BY n DESC LIMIT 10`)
-  }
-  
-  
-  async getTopTenCategory(){
-    return this.borrowBookRepository.query(`SELECT category.id,category.name,count(*) as n FROM borrow_book ,book,book_categories_category,category where borrow_book."bookId" = book.id AND book.id = book_categories_category."bookId" AND  book_categories_category."categoryId" = category."id" GROUP BY category.name,category.id ORDER BY n DESC LIMIT 10`)
-  }
 }
