@@ -12,11 +12,9 @@ export class EmailService {
    * 发送邮件验证码
    * @param data 邮件主体信息
    */
-  async sendEmailCode(data) {
+  async sendEmailCode(data,code) {
     try {
-      const code = Math.random()
-        .toString()
-        .slice(-6);
+      
       const date = '2021年03月18日 22:27:49';
       const sendMailOptions: ISendMailOptions = {
         to: data.email,

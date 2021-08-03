@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Req, Res, Session, UseGuards } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { NationsService } from '../nations/nations.service';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
@@ -11,6 +11,7 @@ import { CreateUserDto } from '../users/create.user.dto';
 import { User } from '../users/user.entity';
 import { UsersService } from '../users/users.service';
 import { Role } from '../roles/role.entity';
+import {Request} from 'express'
 
 @Controller('account')
 export class AccountController {
@@ -34,7 +35,7 @@ export class AccountController {
   }
   
   @Post('sign')
-  async sign(@Body() data: CreateUserDto) {
+  async signUp(@Body() data: CreateUserDto) {
     // const u = new User(user)
     const userInDatabase = await this.usersService.findOne(data.username);
     
