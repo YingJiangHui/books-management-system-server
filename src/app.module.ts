@@ -12,9 +12,10 @@ import { CategoriesModule } from './categorys/categories.module';
 import { CommentsModule } from './comments/comments.module';
 import { BorrowBooksModule } from './borrow-books/borrow-books.module';
 import { StatisticsModule } from './statistics/statistics.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(),AccountModule,NationsModule,UsersModule, BooksModule, PublishersModule, CategoriesModule, CommentsModule, BorrowBooksModule, StatisticsModule],
+  imports: [TypeOrmModule.forRoot(),AccountModule,NationsModule,UsersModule, BooksModule, PublishersModule, CategoriesModule, CommentsModule, BorrowBooksModule, StatisticsModule, EmailModule],
   controllers: [AppController],
   providers: [AppService],
 })
