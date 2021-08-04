@@ -4,12 +4,12 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../../users/user.entity';
 import Book from '../../books/book.entity';
 
-export type BorrowBookStatus = 'APPLIED'|'BORROWED'|'RESERVED'|'RETURNED'|'LOST'|'REFUSE'|'CANCELED'|'RENEWAL'
+export type BorrowBookStatus = 'APPLIED'|'BORROWED'|'RESERVED'|'RETURNED'|'LOST'|'REFUSE'|'CANCELED'|'RENEWAL'|'RESERVE_FAILED'
 @Entity()
 export class BorrowBook {
   constructor(borrowBook:BorrowBook) {

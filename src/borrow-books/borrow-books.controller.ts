@@ -74,9 +74,15 @@ export class BorrowBooksController {
   async update(@Param('id') id: string, @Body() updateBorrowBookDto: UpdateBorrowBookDto, @Req() req: Request) {
     const { startedDate, endDate, status } = updateBorrowBookDto;
     const borrowBook = await this.borrowBooksService.findOne(+id);
+    
     if (['APPLIED', 'RENEWAL'].indexOf(status) !== -1) {
       await this.checkCanBorrow(borrowBook.book.id.toString(), { startedDate, endDate, userId: req.user['id'] });
     }
+    
+    if(status==='LOST'){
+      await this.borrowBooksService.updateStatus({bookId:borrowBook.book.id,status: "RESERVE_FAILED"})
+    }
+    
     return this.borrowBooksService.update(+id, updateBorrowBookDto);
   }
   
@@ -93,5 +99,4 @@ export class BorrowBooksController {
       return this.borrowBooksService.remove(+id);
     throw new InternalServerErrorException('本次借阅未完成');
   }
-
 }

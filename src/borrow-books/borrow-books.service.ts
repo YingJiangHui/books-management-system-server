@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateBorrowBookDto } from './dto/update-borrow-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LessThanOrEqual, MoreThanOrEqual, Not, Repository } from 'typeorm';
-import { BorrowBook } from './entities/borrow-book.entity';
+import { Connection,LessThanOrEqual,MoreThanOrEqual,Not,Repository } from 'typeorm';
+import { BorrowBook,BorrowBookStatus } from './entities/borrow-book.entity';
 import { QueryBorrowBookDto } from './dto/query-borrow-book.dto';
 import { FindOneOptions } from 'typeorm/find-options/FindOneOptions';
 
 @Injectable()
 export class BorrowBooksService {
-  constructor(@InjectRepository(BorrowBook) private borrowBookRepository: Repository<BorrowBook>) {
+  constructor(@InjectRepository(BorrowBook) private borrowBookRepository: Repository<BorrowBook>,private readonly connection: Connection) {
   }
   
   create(createBorrowBookDto: BorrowBook) {
@@ -41,6 +41,10 @@ export class BorrowBooksService {
   
   update(id: number, updateBorrowBookDto: UpdateBorrowBookDto) {
     return this.borrowBookRepository.update(id,updateBorrowBookDto)
+  }
+  
+  async updateStatus(params: {status:BorrowBookStatus,bookId:number}){
+    await this.connection.query(`UPDATE borrow_book SET borrow_book."status"='${params.status}' WHERE borrow_book."status"="RESERVED" AND borrow_book."bookId"='${params.bookId}'`)
   }
   
   remove(id: number) {
