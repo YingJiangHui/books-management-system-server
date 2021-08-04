@@ -32,7 +32,7 @@ export class BooksService {
   }
   
   findOne(id: number) {
-    return this.booksRepository.findOne(id)
+    return this.booksRepository.findOne(id,{relations:['categories','publisher']})
   }
   
   creates(book: Book[]) {
