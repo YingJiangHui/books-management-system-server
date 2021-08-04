@@ -24,7 +24,14 @@ export class StatisticsService {
   }
   
   async getStatisticsByTime(timeUnit:TimeUnit,timeQuantum:TimeQuantum=['2021-01-01','2022-01-01']) {
-    return this.connection.query(`SELECT "status",EXTRACT(${timeUnit} FROM "startedDate") as time,count(*) FROM borrow_book where "startedDate" between '${timeQuantum[0]}' and '${timeQuantum[1]}' GROUP BY time,status`)
+    const formatDate = {
+      day:'DD',
+      month:'MM'
+    };
+    // select  borrow_book.status,to_char(borrow_book."startedDate", 'YYYY-MM-DD') as d ,  count(id)  as  total_count from  borrow_book where borrow_book."startedDate" between  '2021-01-01'  and  '2022-01-01'
+    // group by d ,status
+    // return this.connection.query(`SELECT "status",EXTRACT(${timeUnit} FROM "startedDate") as time,count(*) FROM borrow_book where "startedDate" between '${timeQuantum[0]}' and '${timeQuantum[1]}' GROUP BY time,status`)
+    return await this.connection.query(`select  borrow_book.status,to_char(borrow_book."startedDate", '${formatDate[timeUnit]}') as time ,  count(id) from  borrow_book where borrow_book."startedDate" between '${timeQuantum[0]}' and  '${timeQuantum[1]}' group by time ,status`)
     // return this.connection.query(`select
     //   "startedDate"::DATE-(extract(dow from "startedDate"::TIMESTAMP)-1||'day')::interval monday,
     //   count(*) amount

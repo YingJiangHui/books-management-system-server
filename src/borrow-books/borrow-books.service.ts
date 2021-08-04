@@ -44,7 +44,7 @@ export class BorrowBooksService {
   }
   
   async updateStatus(params: {status:BorrowBookStatus,bookId:number}){
-    await this.connection.query(`UPDATE borrow_book SET borrow_book."status"='${params.status}' WHERE borrow_book."status"="RESERVED" AND borrow_book."bookId"='${params.bookId}'`)
+    await this.connection.query(`UPDATE borrow_book SET status='${params.status}' WHERE borrow_book."status"='RESERVED' AND borrow_book."bookId"='${params.bookId}'`)
   }
   
   remove(id: number) {
