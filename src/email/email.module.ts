@@ -6,7 +6,6 @@ import { EmailController } from './email.controller';
 const path = require('path');
 
 const pathname = path.join(__dirname, 'templates');
-console.log(pathname);
 
 @Module({
   imports: [

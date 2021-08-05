@@ -41,13 +41,18 @@ export class BorrowBooksController {
     const refuseBooks = await this.borrowBooksService.findAll({ bookId: +bookId, status: ['LOST'] });
     if (refuseBooks.length > 0)
       throw new InternalServerErrorException('图书遗失无法借阅');
-    
-    
   }
   
   @Post()
   async create(@Req() req: Request, @Body() createBorrowBookDto: CreateBorrowBookDto) {
-    const { bookId, ...borrowBookField } = createBorrowBookDto;
+    const { bookId,code, ...borrowBookField } = createBorrowBookDto;
+    
+    if(borrowBookField.status==='RESERVED'){
+      if(code!==req.session['code']){
+        throw new BadRequestException([{ field: 'code',subErrors: ['验证码错误'] }])
+      }
+    }
+    
     await this.checkCanBorrow(bookId, { startedDate: borrowBookField.startedDate, endDate: borrowBookField.endDate, userId: req.user['id'] });
     const book = await this.booksService.findOne(+bookId);
     const user = new User(req.user);
@@ -72,14 +77,9 @@ export class BorrowBooksController {
   
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateBorrowBookDto: UpdateBorrowBookDto, @Req() req: Request) {
-    const { startedDate, endDate, status,code } = updateBorrowBookDto;
+    const { startedDate, endDate, status } = updateBorrowBookDto;
     const borrowBook = await this.borrowBooksService.findOne(+id);
-    
-    if(status==='RESERVED'){
-      if(code!==req.session['code']){
-        throw new BadRequestException({ field: 'code',subErrors: ['验证码错误'] })
-      }
-    }
+
     
     if (['APPLIED', 'RENEWAL'].indexOf(status) !== -1) {
       await this.checkCanBorrow(borrowBook.book.id.toString(), { startedDate, endDate, userId: req.user['id'] });

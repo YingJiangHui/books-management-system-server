@@ -14,4 +14,7 @@ export class CreateBorrowBookDto {
   
   @IsNotEmpty()
   bookId:string
+  
+  @IsNotEmpty()
+  code: string
 }

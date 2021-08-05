@@ -67,7 +67,6 @@ export class BorrowBooksService {
       relations:['book','user'],
       where:status?(status.map((status)=>({status,...baseCondition})) as FindOneOptions['where']):baseCondition,
     })
-    console.log(borrowedBooks[0]);
     return borrowedBooks[1]!==0
   }
   
@@ -80,7 +79,6 @@ export class BorrowBooksService {
       relations:['book','user'],
       where:status?(status.map((status)=>({status,...baseCondition})) as FindOneOptions['where']):baseCondition,
     })
-    console.log(borrowedBooks[0]);
     return borrowedBooks[1]!==0
   }
 }
