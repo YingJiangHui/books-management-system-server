@@ -5,7 +5,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
-  OneToMany, OneToOne,
+  OneToMany,
   PrimaryGeneratedColumn, UpdateDateColumn
 } from 'typeorm';
 import Publisher from '../publishers/publisher.entity';

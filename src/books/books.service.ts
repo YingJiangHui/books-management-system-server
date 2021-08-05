@@ -4,7 +4,7 @@ import Book from './book.entity';
 import { Brackets, Connection, Repository } from 'typeorm';
 import Category from '../categorys/category.entity';
 
-export type BookQuery = Partial<{ author:string,categories:string,name:string,publisher:string }&Common.Pagination>
+export type BookQuery = Partial<{ author:string,categories:string,name:string,publisher:string,id:string,description:string}&Common.Pagination>
 
 @Injectable()
 export class BooksService {
@@ -12,14 +12,16 @@ export class BooksService {
   }
   
   find(query?:BookQuery) {
-    const { author,categories,name,publisher } = query;
+    const { author,categories,name,publisher ,id,description} = query;
     return this.booksRepository.createQueryBuilder('book')
       .leftJoinAndSelect('book.publisher','publisher')
       .leftJoinAndSelect('book.categories','category')
       .where(new Brackets((qb)=>{
-        if(author||categories||publisher)
-        qb.where('category.name LIKE :categoryName AND book.name LIKE :bookName AND publisher.name LIKE :publisherName AND book.author LIKE  :authorName',
-          {categoryName:`%${categories?categories:''}%`,bookName:`%${name?name:''}%`,publisherName:`%${publisher?publisher:''}%`,authorName:`%${author?author:''}%`})
+        if(author||categories||publisher||name||description)
+        qb.where('category.name LIKE :categoryName AND book.name LIKE :bookName AND publisher.name LIKE :publisherName AND book.author LIKE  :authorName AND book.description LIKE :description',
+          {categoryName:`%${categories?categories:''}%`,bookName:`%${name?name:''}%`,publisherName:`%${publisher?publisher:''}%`,authorName:`%${author?author:''}%`,description:`%${description?description:''}%`})
+        if(id)
+        qb.andWhere('book.id = :bookId',{bookId:+id})
       }))
       // .andWhere(new Brackets((qb)=>{
       //   if(categoryId)
