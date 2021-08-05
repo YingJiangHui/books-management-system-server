@@ -9,7 +9,7 @@ import {
   Query,
   Req,
   UseGuards,
-  InternalServerErrorException
+  InternalServerErrorException,BadRequestException,
 } from '@nestjs/common';
 import { BorrowBooksService } from './borrow-books.service';
 import { CreateBorrowBookDto } from './dto/create-borrow-book.dto';
@@ -72,8 +72,14 @@ export class BorrowBooksController {
   
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateBorrowBookDto: UpdateBorrowBookDto, @Req() req: Request) {
-    const { startedDate, endDate, status } = updateBorrowBookDto;
+    const { startedDate, endDate, status,code } = updateBorrowBookDto;
     const borrowBook = await this.borrowBooksService.findOne(+id);
+    
+    if(status==='RESERVED'){
+      if(code!==req.session['code']){
+        throw new BadRequestException({ field: 'code',subErrors: ['验证码错误'] })
+      }
+    }
     
     if (['APPLIED', 'RENEWAL'].indexOf(status) !== -1) {
       await this.checkCanBorrow(borrowBook.book.id.toString(), { startedDate, endDate, userId: req.user['id'] });

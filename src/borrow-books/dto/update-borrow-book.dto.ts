@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateBorrowBookDto } from './create-borrow-book.dto';
-import { IsISO8601, IsString } from 'class-validator';
+import { IsISO8601,IsOptional,IsString } from 'class-validator';
 import { BorrowBookStatus } from '../entities/borrow-book.entity';
 
 export class UpdateBorrowBookDto extends PartialType(CreateBorrowBookDto) {
@@ -10,4 +10,6 @@ export class UpdateBorrowBookDto extends PartialType(CreateBorrowBookDto) {
   endDate:string;
   @IsISO8601()
   startedDate: string;
+  @IsOptional()
+  code?: string
 }
