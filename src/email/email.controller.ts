@@ -1,12 +1,13 @@
 import { BadRequestException, Body, Controller, Post, Session } from '@nestjs/common';
 import { EmailService } from './email.service';
+import { SendCodeDto } from './dto/send-code.dto';
 
 @Controller('email')
 export class EmailController {
   constructor(private emailService: EmailService) {}
   
   @Post('/sendCode')
-  async sendEmailCode(@Body() data,@Session() session: Record<string, any>) {
+  async sendEmailCode(@Body() data:SendCodeDto,@Session() session: Record<string, any>) {
     const code = Math.random()
       .toString()
       .slice(-6);
