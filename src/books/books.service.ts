@@ -13,31 +13,40 @@ export class BooksService {
   
   find(query?: BookQuery) {
     const { searchText } = query;
-    let { author, categories, name, publisher, id, description } = query;
-    if (searchText)
-      author = categories = name = publisher = description = searchText;
+    let { author, categories, name, publisher, description } = query;
+    const { id } = query;
     return this.booksRepository.createQueryBuilder('book')
       .leftJoinAndSelect('book.publisher', 'publisher')
       .leftJoinAndSelect('book.categories', 'category')
       .where(new Brackets((qb) => {
-        if(searchText){
-          qb.where('category.name LIKE :categoryName OR book.name LIKE :bookName OR publisher.name LIKE :publisherName OR book.author LIKE  :authorName OR book.description LIKE :description',
-            { categoryName: `%${categories ? categories : ''}%`, bookName: `%${name ? name : ''}%`, publisherName: `%${publisher ? publisher : ''}%`, authorName: `%${author ? author : ''}%`, description: `%${description ? description : ''}%` });
-        } else{
-          if (author || categories || publisher || name || description)
-            qb.where('category.name LIKE :categoryName AND book.name LIKE :bookName AND publisher.name LIKE :publisherName AND book.author LIKE  :authorName AND book.description LIKE :description',
-              { categoryName: `%${categories ? categories : ''}%`, bookName: `%${name ? name : ''}%`, publisherName: `%${publisher ? publisher : ''}%`, authorName: `%${author ? author : ''}%`, description: `%${description ? description : ''}%` });
-          if (id)
+        if (searchText) {
+          author = categories = name = publisher = description = searchText;
+          qb.where('category.name LIKE :categoryName ',
+            { categoryName: `%${categories ? categories : ''}%` })
+            .orWhere(`book.name LIKE :bookName`,
+              { bookName: `%${name ? name : ''}%` })
+            .orWhere(`publisher.name LIKE :publisherName `,
+              { publisherName: `%${publisher ? publisher : ''}%` })
+            .orWhere(`book.author LIKE  :authorName`,
+              { authorName: `%${author ? author : ''}%` })
+            .orWhere(` book.description LIKE :description`,
+              { description: `%${description ? description : ''}%` });
+        } else {
+          qb.where('category.name LIKE :categoryName ',
+            { categoryName: `%${categories ? categories : ''}%` })
+            .andWhere(`book.name LIKE :bookName`,
+              { bookName: `%${name ? name : ''}%` })
+            .andWhere(`publisher.name LIKE :publisherName `,
+              { publisherName: `%${publisher ? publisher : ''}%` })
+            .andWhere(`book.author LIKE  :authorName`,
+              { authorName: `%${author ? author : ''}%` })
+            .andWhere(` book.description LIKE :description`,
+              { description: `%${description ? description : ''}%` });
+          if (id) {
             qb.andWhere('book.id = :bookId', { bookId: +id });
+          }
         }
-
       }))
-      // .andWhere(new Brackets((qb)=>{
-      //   if(categoryId)
-      //     qb.where('category.id = :id ',{id:Number(categoryId)})
-      //   else
-      //     qb.where('category.id>=0')
-      // }))
       .orderBy('book.id', 'DESC')
       .getMany();
   }

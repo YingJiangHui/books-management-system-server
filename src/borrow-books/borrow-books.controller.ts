@@ -30,6 +30,7 @@ export class BorrowBooksController {
   
   async checkCanBorrow(@Param('id') bookId: string, query: { endDate: string, startedDate: string, userId: number }) {
     const { endDate, startedDate, userId } = query;
+    
     const isOtherUserBorrowed = await this.borrowBooksService.checkIsOtherUserBorrowed({ bookId: +bookId, startedDate, endDate, status: ['RESERVED', 'BORROWED', 'APPLIED', 'RENEWAL'], userId });
     if (isOtherUserBorrowed)
       throw new InternalServerErrorException('该时间段已经有其他用户借阅');
