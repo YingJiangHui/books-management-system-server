@@ -66,6 +66,6 @@ export class BooksController {
     const can = borrowBooks.filter((borrowBooks)=>borrowBooks.status==='RESERVED').length===borrowBooks.length
     if(can)
       return await this.booksService.delete(+id)
-    new InternalServerErrorException('该书本未归还,无法删除')
+    throw new InternalServerErrorException('该书本未归还,无法删除')
   }
 }

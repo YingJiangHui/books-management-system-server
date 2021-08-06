@@ -60,8 +60,8 @@ export class BooksService {
     return this.booksRepository.save(book); // save 是通过一个实例来创建一条记录
   }
   
-  delete(id: number) {
-    return this.booksRepository.delete({ id });
+  async delete(id: number) {
+    return this.booksRepository.delete(id);
   }
   
   async deleteCategories(id: number) {
