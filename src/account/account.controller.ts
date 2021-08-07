@@ -29,8 +29,8 @@ export class AccountController {
   
   @UseGuards(JwtAuthGuard, RolesGuard) // 测试代码，受jwt保护的jwt守卫
   @Roles(RoleEnum.User)
-  @Get('profile')
-  getProfile(@Req() req) {
+  @Get('user')
+  getUser(@Req() req) {
     return req.user;
   }
   
@@ -61,4 +61,6 @@ export class AccountController {
   async logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie('jwt');
   }
+  
+
 }

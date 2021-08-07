@@ -13,7 +13,7 @@ export class BooksService {
   
   find(query?: BookQuery) {
     const { searchText } = query;
-    let { author, categories, name, publisher, description } = query;
+    let { author='', categories='', name='', publisher='', description='' } = query;
     const { id } = query;
     return this.booksRepository.createQueryBuilder('book')
       .leftJoinAndSelect('book.publisher', 'publisher')
@@ -22,26 +22,26 @@ export class BooksService {
         if (searchText) {
           author = categories = name = publisher = description = searchText;
           qb.where('category.name LIKE :categoryName ',
-            { categoryName: `%${categories ? categories : ''}%` })
+            { categoryName: `%${categories}%` })
             .orWhere(`book.name LIKE :bookName`,
-              { bookName: `%${name ? name : ''}%` })
+              { bookName: `%${name}%` })
             .orWhere(`publisher.name LIKE :publisherName `,
-              { publisherName: `%${publisher ? publisher : ''}%` })
+              { publisherName: `%${publisher}%` })
             .orWhere(`book.author LIKE  :authorName`,
-              { authorName: `%${author ? author : ''}%` })
+              { authorName: `%${author}%` })
             .orWhere(` book.description LIKE :description`,
-              { description: `%${description ? description : ''}%` });
+              { description: `%${description}%` });
         } else {
           qb.where('category.name LIKE :categoryName ',
-            { categoryName: `%${categories ? categories : ''}%` })
+            { categoryName: `%${categories}%` })
             .andWhere(`book.name LIKE :bookName`,
-              { bookName: `%${name ? name : ''}%` })
+              { bookName: `%${name}%` })
             .andWhere(`publisher.name LIKE :publisherName `,
-              { publisherName: `%${publisher ? publisher : ''}%` })
+              { publisherName: `%${publisher}%` })
             .andWhere(`book.author LIKE  :authorName`,
-              { authorName: `%${author ? author : ''}%` })
+              { authorName: `%${author}%` })
             .andWhere(` book.description LIKE :description`,
-              { description: `%${description ? description : ''}%` });
+              { description: `%${description}%` });
           if (id) {
             qb.andWhere('book.id = :bookId', { bookId: +id });
           }

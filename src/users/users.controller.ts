@@ -13,4 +13,9 @@ export class UsersController {
   async getCurrentUser(@Req() req): Promise<User> {
     return req.user;
   }
+  
+  @Get()
+  async getUsers (){
+    return this.userService.find()
+  }
 }
