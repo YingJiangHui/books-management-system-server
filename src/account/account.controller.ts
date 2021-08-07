@@ -39,7 +39,6 @@ export class AccountController {
     const userInDatabase = await this.usersService.findOne(data.username);
     const nation = await this.nationsService.findOne(data.nationId);
     const role = await this.rolesService.findOne({name:'reader'})
-    console.log(role);
     const user = new User({ username: data.username, password: data.password, confirmPassword: data.confirmPassword, email: data.email, nation,roles:[role] });
     if(data.code!==session.code){
       user.addError({ field: 'code',subErrors: ['验证码错误'] })
