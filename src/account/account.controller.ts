@@ -11,10 +11,11 @@ import { CreateUserDto } from '../users/create.user.dto';
 import { User } from '../users/user.entity';
 import { UsersService } from '../users/users.service';
 import { Role } from '../roles/role.entity';
+import { RolesService } from '../roles/roles.service';
 
 @Controller('account')
 export class AccountController {
-  constructor(private readonly authService: AuthService, private readonly usersService: UsersService, private readonly nationsService: NationsService) {
+  constructor(private readonly authService: AuthService, private readonly usersService: UsersService, private readonly nationsService: NationsService, private readonly rolesService: RolesService) {
   }
   
   @UseGuards(LocalAuthGuard) // 不受保护的本地守卫，LocalStrategy.validate -> AuthService.validateUser -> AppController.login -> authService.login
@@ -35,12 +36,10 @@ export class AccountController {
   
   @Post('sign')
   async signUp(@Body() data: CreateUserDto,@Session() session: Record<string, any>) {
-
-    // const u = new User(user)
     const userInDatabase = await this.usersService.findOne(data.username);
-    
     const nation = await this.nationsService.findOne(data.nationId);
-    const role = new Role({name:'user'});
+    const role = await this.rolesService.findOne({name:'reader'})
+    console.log(role);
     const user = new User({ username: data.username, password: data.password, confirmPassword: data.confirmPassword, email: data.email, nation,roles:[role] });
     if(data.code!==session.code){
       user.addError({ field: 'code',subErrors: ['验证码错误'] })
@@ -56,6 +55,7 @@ export class AccountController {
     
     
     return this.usersService.createOne(user);
+    
   }
   
   @Post('logout')

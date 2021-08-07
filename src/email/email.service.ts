@@ -26,12 +26,6 @@ export class EmailService {
           date, //日期
           sign: data.sign || '系统邮件,回复无效。' //发送的签名,当然也可以不要
         },
-        // attachments: [
-        //   {
-        //     filename: 'validate.code.ejs', //文件名
-        //     path: path.join(process.cwd(), './src/templates/validate.code.ejs') //服务端的文件地址
-        //   }
-        // ]
       };
       this.mailerService
         .sendMail(sendMailOptions)

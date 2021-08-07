@@ -4,9 +4,10 @@ import { NationsModule } from '../nations/nations.module';
 import { AuthModule } from '../auth/auth.module';
 import { Connection } from 'typeorm';
 import { AccountController } from './account.controller';
+import { RolesModule } from '../roles/roles.module';
 
 @Module({
-  imports: [UsersModule,NationsModule,AuthModule],
+  imports: [UsersModule,NationsModule,AuthModule,RolesModule],
   controllers: [AccountController],
   exports: []
 })

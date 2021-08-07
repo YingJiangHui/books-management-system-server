@@ -63,9 +63,9 @@ export class BooksController {
   @Delete(':id')
   async deleteBooks( @Param('id') id: number){
     const borrowBooks = await this.borrowBooksService.findAll({bookId:+id})
-    const can = borrowBooks.filter((borrowBooks)=>borrowBooks.status==='RESERVED').length===borrowBooks.length
+    const can = borrowBooks.length===0
     if(can)
       return await this.booksService.delete(+id)
-    throw new InternalServerErrorException('该书本未归还,无法删除')
+    throw new InternalServerErrorException('该图书已存在借阅信息,无法删除')
   }
 }
