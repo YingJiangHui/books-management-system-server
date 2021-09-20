@@ -56,14 +56,13 @@ export class BooksService {
   }
   
   creates(book: Book[]) {
-    // return this.booksRepository.create(book); create 是通过一个对象来创建一条数据库记录
     return this.booksRepository.save(book); // save 是通过一个实例来创建一条记录
   }
   
   async delete(id: number) {
     return this.booksRepository.delete(id);
   }
-  
+  // 修改
   async deleteCategories(id: number) {
     return this.connection.query(`DELETE FROM book_categories_category WHERE "bookId"=${id}`);
   }
